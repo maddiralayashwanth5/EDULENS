@@ -1,0 +1,348 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  phone       String?  @unique
+  email       String?  @unique
+  role        UserRole @default(PARENT)
+  isVerified  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  reviews     Review[]
+  complaints  Complaint[]
+  sessions    Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  refreshToken String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model StaffUser {
+  id          String     @id @default(cuid())
+  email       String     @unique
+  password    String
+  firstName   String
+  lastName    String
+  role        StaffRole
+  permissions Json
+  totpSecret  String?
+  isActive    Boolean    @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  sessions    StaffSession[]
+  auditLogs   AuditLog[]
+  createdSchools School[] @relation("CreatedBy")
+  updatedSchools School[] @relation("UpdatedBy")
+
+  @@map("staff_users")
+}
+
+model StaffSession {
+  id           String    @id @default(cuid())
+  staffUserId  String
+  refreshToken String    @unique
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+
+  // Relations
+  staffUser StaffUser @relation(fields: [staffUserId], references: [id], onDelete: Cascade)
+
+  @@map("staff_sessions")
+}
+
+model School {
+  id              String   @id @default(cuid())
+  name            String
+  address         String
+  city            String
+  state           String
+  pincode         String
+  latitude        Float
+  longitude       Float
+  phone           String
+  email           String
+  website         String?
+  
+  // School Details
+  board           Board
+  type            SchoolType
+  medium          String[]
+  gradesFrom      String
+  gradesTo        String
+  
+  // Infrastructure
+  totalArea       Float
+  builtUpArea     Float
+  playgroundArea  Float
+  laboratories    String[]
+  hasLibrary      Boolean  @default(false)
+  hasComputerLab  Boolean  @default(false)
+  hasSportsComplex Boolean @default(false)
+  
+  // Fees
+  admissionFee    Float
+  annualFee       Float
+  transportFee    Float?
+  
+  // Safety & Compliance
+  fireSafety      Boolean  @default(false)
+  cctvSurveillance Boolean @default(false)
+  securityGuards  Boolean  @default(false)
+  medicalRoom     Boolean  @default(false)
+  
+  // Teachers
+  totalTeachers   Int
+  qualifiedTeachers Int
+  studentTeacherRatio Float
+  
+  // Academics
+  passingRate     Float
+  averageScore    Float
+  
+  // ETI Score
+  etiScore        Float    @default(0)
+  etiBreakdown    Json
+  
+  // Status
+  isVerified      Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  createdById     String?
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  reviews         Review[]
+  complaints      Complaint[]
+  documents       Document[]
+  verifications   Verification[]
+  createdBy       StaffUser? @relation("CreatedBy", fields: [createdById], references: [id])
+  updatedBy       StaffUser? @relation("UpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([city, state])
+  @@index([board, type])
+  @@index([etiScore])
+  @@index([latitude, longitude])
+  @@map("schools")
+}
+
+model Review {
+  id          String      @id @default(cuid())
+  schoolId    String
+  userId      String
+  rating      Int         // 1-5
+  title       String
+  content     String
+  isAnonymous Boolean     @default(false)
+  status      ReviewStatus @default(PENDING)
+  moderatedBy String?
+  moderatedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  school      School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId, status])
+  @@index([userId])
+  @@map("reviews")
+}
+
+model Complaint {
+  id          String         @id @default(cuid())
+  schoolId    String
+  userId      String
+  category    ComplaintCategory
+  title       String
+  description String
+  evidence    Json           // Array of file URLs
+  status      ComplaintStatus @default(OPEN)
+  priority    Priority       @default(MEDIUM)
+  assignedTo  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Relations
+  school      School         @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId, status])
+  @@index([status, priority])
+  @@map("complaints")
+}
+
+model Document {
+  id          String       @id @default(cuid())
+  schoolId    String?
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  url         String
+  category    DocumentCategory
+  isVerified  Boolean      @default(false)
+  uploadedBy  String
+  createdAt   DateTime     @default(now())
+
+  // Relations
+  school      School?      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId])
+  @@index([category])
+  @@map("documents")
+}
+
+model Verification {
+  id          String           @id @default(cuid())
+  schoolId    String
+  field       String
+  oldValue    Json
+  newValue    Json
+  aiFlag      String?
+  confidence  Float?
+  status      VerificationStatus @default(PENDING)
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  reason      String?
+  createdAt   DateTime         @default(now())
+
+  // Relations
+  school      School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId, status])
+  @@index([status])
+  @@map("verifications")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  action      String
+  resource    String
+  resourceId  String
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String
+  userAgent   String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        StaffUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([resource, resourceId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model OtpCode {
+  id          String   @id @default(cuid())
+  phone       String
+  code        String
+  expiresAt   DateTime
+  isUsed      Boolean  @default(false)
+  attempts    Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([phone])
+  @@index([expiresAt])
+  @@map("otp_codes")
+}
+
+// Enums
+enum UserRole {
+  PARENT
+  GUARDIAN
+}
+
+enum StaffRole {
+  DATA_COLLECTOR
+  VERIFIER
+  MODERATOR
+  ADMIN
+}
+
+enum Board {
+  CBSE
+  ICSE
+  STATE_BOARD
+  IB
+  IGCSE
+}
+
+enum SchoolType {
+  GOVERNMENT
+  PRIVATE
+  AIDED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ComplaintCategory {
+  INFRASTRUCTURE
+  TEACHING_QUALITY
+  SAFETY
+  FEES
+  ADMINISTRATION
+  OTHER
+}
+
+enum ComplaintStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum DocumentCategory {
+  SCHOOL_CERTIFICATE
+  INFRASTRUCTURE_PHOTO
+  SAFETY_CERTIFICATE
+  OTHER
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

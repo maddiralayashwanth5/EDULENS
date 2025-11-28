@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isModerator() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'moderator'];
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Institutions collection
+    match /institutions/{institutionId} {
+      allow read: if true; // Public read
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Reviews collection
+    match /reviews/{reviewId} {
+      allow read: if true; // Public read for approved reviews
+      allow create: if isAuthenticated();
+      allow update: if isOwner(resource.data.userId) || isModerator();
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    // Complaints collection
+    match /complaints/{complaintId} {
+      allow read: if isOwner(resource.data.userId) || isModerator();
+      allow create: if isAuthenticated();
+      allow update: if isModerator();
+      allow delete: if isAdmin();
+    }
+    
+    // Uploads collection (for tracking bulk uploads)
+    match /uploads/{uploadId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Stats collection (aggregated data)
+    match /stats/{statId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

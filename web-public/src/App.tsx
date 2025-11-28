@@ -11,8 +11,11 @@ import { Contact } from "@/pages/Contact";
 import { Privacy } from "@/pages/Privacy";
 import { Terms } from "@/pages/Terms";
 import { NotFound } from "@/pages/NotFound";
+import { useLenis } from "@/hooks/useLenis";
 
 function App() {
+  useLenis();
+
   return (
     <BrowserRouter>
       <Routes>

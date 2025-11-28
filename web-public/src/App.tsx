@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Home } from "@/pages/Home";
+import { Institutions } from "@/pages/Institutions";
+import { InstitutionDetail } from "@/pages/InstitutionDetail";
 import { Schools } from "@/pages/Schools";
 import { SchoolDetail } from "@/pages/SchoolDetail";
 import { Compare } from "@/pages/Compare";
@@ -21,6 +23,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="institutions" element={<Institutions />} />
+          <Route path="institution/:id" element={<InstitutionDetail />} />
           <Route path="schools" element={<Schools />} />
           <Route path="schools/:id" element={<SchoolDetail />} />
           <Route path="compare" element={<Compare />} />

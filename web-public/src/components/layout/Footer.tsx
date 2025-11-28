@@ -3,9 +3,11 @@ import { GraduationCap, Facebook, Twitter, Instagram, Linkedin } from "lucide-re
 
 const footerLinks = {
   product: [
-    { href: "/schools", label: "Browse Schools" },
-    { href: "/compare", label: "Compare Schools" },
-    { href: "/about", label: "ETI Score" },
+    { href: "/institutions", label: "Explore Institutions" },
+    { href: "/institutions?type=school", label: "Schools" },
+    { href: "/institutions?type=college", label: "Colleges" },
+    { href: "/institutions?type=coaching", label: "Coaching Centers" },
+    { href: "/compare", label: "Compare" },
   ],
   company: [
     { href: "/about", label: "About Us" },

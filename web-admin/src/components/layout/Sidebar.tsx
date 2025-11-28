@@ -9,18 +9,29 @@ import {
   Settings,
   MessageSquare,
   BarChart3,
-  Shield
+  Shield,
+  Building2,
+  BookOpen,
+  Landmark,
+  Library,
+  Briefcase
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/institutions", icon: Building2, label: "All Institutions", section: "Institutions" },
   { href: "/schools", icon: School, label: "Schools" },
-  { href: "/upload", icon: Upload, label: "Upload Data" },
+  { href: "/colleges", icon: GraduationCap, label: "Colleges" },
+  { href: "/universities", icon: Landmark, label: "Universities" },
+  { href: "/coaching", icon: BookOpen, label: "Coaching Centers" },
+  { href: "/societies", icon: Library, label: "Educational Societies" },
+  { href: "/vocational", icon: Briefcase, label: "Vocational Institutes" },
+  { href: "/upload", icon: Upload, label: "Upload Data", section: "Management" },
   { href: "/reviews", icon: MessageSquare, label: "Reviews" },
   { href: "/complaints", icon: FileText, label: "Complaints" },
-  { href: "/users", icon: Users, label: "Users" },
   { href: "/verification", icon: Shield, label: "Verification" },
+  { href: "/users", icon: Users, label: "Users" },
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/settings", icon: Settings, label: "Settings" },
 ];

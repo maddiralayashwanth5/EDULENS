@@ -79,7 +79,7 @@ export function Upload() {
       <div>
         <h1 className="text-3xl font-bold">Upload Data</h1>
         <p className="text-[hsl(var(--muted-foreground))]">
-          Import school data from CSV or Excel files
+          Import institution data from CSV or Excel files
         </p>
       </div>
 
@@ -88,17 +88,40 @@ export function Upload() {
           {/* Upload Type Selection */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Data Type</CardTitle>
-              <CardDescription>Select the type of data you're uploading</CardDescription>
+              <CardTitle className="text-lg">Institution Type</CardTitle>
+              <CardDescription>Select the type of institution data you're uploading</CardDescription>
             </CardHeader>
-            <CardContent>
-              <Select value={uploadType} onChange={(e) => setUploadType(e.target.value)}>
-                <option value="schools">Schools</option>
-                <option value="reviews">Reviews</option>
-                <option value="fees">Fee Structure</option>
-                <option value="facilities">Facilities</option>
-                <option value="staff">Staff Information</option>
-              </Select>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Institution Category</label>
+                <Select value={uploadType} onChange={(e) => setUploadType(e.target.value)}>
+                  <optgroup label="Educational Institutions">
+                    <option value="schools">Schools (K-12)</option>
+                    <option value="preschools">Preschools & Daycare</option>
+                    <option value="colleges">Colleges</option>
+                    <option value="universities">Universities</option>
+                  </optgroup>
+                  <optgroup label="Specialized Education">
+                    <option value="coaching">Coaching Centers</option>
+                    <option value="vocational">Vocational Institutes (ITI/Polytechnic)</option>
+                    <option value="special">Special Education Centers</option>
+                    <option value="online">Online Learning Platforms</option>
+                  </optgroup>
+                  <optgroup label="Organizations">
+                    <option value="societies">Educational Societies & NGOs</option>
+                    <option value="trusts">Educational Trusts</option>
+                    <option value="boards">Education Boards</option>
+                  </optgroup>
+                  <optgroup label="Other Data">
+                    <option value="reviews">Reviews & Ratings</option>
+                    <option value="fees">Fee Structure</option>
+                    <option value="facilities">Facilities</option>
+                    <option value="staff">Staff Information</option>
+                    <option value="courses">Courses & Programs</option>
+                    <option value="placements">Placement Data</option>
+                  </optgroup>
+                </Select>
+              </div>
             </CardContent>
           </Card>
 
@@ -203,26 +226,26 @@ export function Upload() {
                 <p className="text-[hsl(var(--muted-foreground))]">CSV, XLS, XLSX files up to 10MB</p>
               </div>
               <div>
-                <h4 className="font-medium mb-1">Required Columns for Schools</h4>
+                <h4 className="font-medium mb-1">Common Required Columns</h4>
                 <ul className="text-[hsl(var(--muted-foreground))] list-disc list-inside space-y-1">
                   <li>name (required)</li>
+                  <li>institution_type (required)</li>
                   <li>address (required)</li>
                   <li>city (required)</li>
                   <li>state (required)</li>
-                  <li>board (CBSE/ICSE/IB/State)</li>
-                  <li>type (Co-ed/Boys/Girls)</li>
+                  <li>pincode</li>
+                  <li>affiliation/board</li>
                   <li>established_year</li>
-                  <li>phone</li>
-                  <li>email</li>
-                  <li>website</li>
+                  <li>phone, email, website</li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium mb-1">Tips</h4>
+                <h4 className="font-medium mb-1">Institution Types</h4>
                 <ul className="text-[hsl(var(--muted-foreground))] list-disc list-inside space-y-1">
-                  <li>Ensure column headers match exactly</li>
-                  <li>Remove empty rows before uploading</li>
-                  <li>Use UTF-8 encoding for CSV files</li>
+                  <li>school, preschool, college</li>
+                  <li>university, coaching</li>
+                  <li>vocational, special_education</li>
+                  <li>society, trust, online</li>
                 </ul>
               </div>
             </CardContent>
@@ -233,17 +256,25 @@ export function Upload() {
               <CardTitle className="text-lg">Download Templates</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
-                <FileSpreadsheet className="h-4 w-4 mr-2" />
-                Schools Template
+              <Button variant="outline" className="w-full justify-start text-left">
+                <FileSpreadsheet className="h-4 w-4 mr-2 shrink-0" />
+                <span className="truncate">Schools & Colleges</span>
               </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <FileSpreadsheet className="h-4 w-4 mr-2" />
-                Reviews Template
+              <Button variant="outline" className="w-full justify-start text-left">
+                <FileSpreadsheet className="h-4 w-4 mr-2 shrink-0" />
+                <span className="truncate">Universities</span>
               </Button>
-              <Button variant="outline" className="w-full justify-start">
-                <FileSpreadsheet className="h-4 w-4 mr-2" />
-                Fees Template
+              <Button variant="outline" className="w-full justify-start text-left">
+                <FileSpreadsheet className="h-4 w-4 mr-2 shrink-0" />
+                <span className="truncate">Coaching Centers</span>
+              </Button>
+              <Button variant="outline" className="w-full justify-start text-left">
+                <FileSpreadsheet className="h-4 w-4 mr-2 shrink-0" />
+                <span className="truncate">Educational Societies</span>
+              </Button>
+              <Button variant="outline" className="w-full justify-start text-left">
+                <FileSpreadsheet className="h-4 w-4 mr-2 shrink-0" />
+                <span className="truncate">Vocational Institutes</span>
               </Button>
             </CardContent>
           </Card>

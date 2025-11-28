@@ -1,20 +1,21 @@
-import { School, Users, MessageSquare, FileText, TrendingUp, TrendingDown } from "lucide-react";
+import { School, TrendingUp, TrendingDown, Building2, GraduationCap, BookOpen } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const stats = [
-  { title: "Total Schools", value: "1,234", change: "+12%", trend: "up", icon: School },
-  { title: "Active Users", value: "45,678", change: "+8%", trend: "up", icon: Users },
-  { title: "Reviews", value: "12,456", change: "+23%", trend: "up", icon: MessageSquare },
-  { title: "Pending Complaints", value: "23", change: "-5%", trend: "down", icon: FileText },
+  { title: "Total Institutions", value: "15,847", change: "+15%", trend: "up", icon: Building2 },
+  { title: "Schools", value: "8,234", change: "+12%", trend: "up", icon: School },
+  { title: "Colleges & Universities", value: "2,456", change: "+8%", trend: "up", icon: GraduationCap },
+  { title: "Coaching Centers", value: "3,892", change: "+18%", trend: "up", icon: BookOpen },
 ];
 
 const recentActivity = [
-  { type: "school", message: "New school added: Delhi Public School, Mumbai", time: "2 mins ago" },
-  { type: "review", message: "New review submitted for Oakridge International", time: "5 mins ago" },
-  { type: "complaint", message: "Complaint resolved: #12345", time: "10 mins ago" },
-  { type: "user", message: "New admin user registered", time: "15 mins ago" },
-  { type: "school", message: "School verified: The Heritage School", time: "20 mins ago" },
+  { type: "university", message: "New university added: IIT Delhi", time: "2 mins ago" },
+  { type: "coaching", message: "ALLEN Career Institute verified", time: "5 mins ago" },
+  { type: "school", message: "New school added: Delhi Public School, Mumbai", time: "8 mins ago" },
+  { type: "society", message: "Pratham Education Foundation updated", time: "12 mins ago" },
+  { type: "college", message: "St. Xavier's College verified", time: "15 mins ago" },
+  { type: "vocational", message: "New ITI added: ITI Bangalore", time: "20 mins ago" },
 ];
 
 const pendingVerifications = [

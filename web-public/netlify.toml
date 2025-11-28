@@ -1,18 +1,13 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = "dist"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-# Redirects for SPA fallback
+# SPA fallback - redirect all routes to index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["admin"]}
 
-# Handle Next.js routes
 [[headers]]
   for = "/*"
   [headers.values]
